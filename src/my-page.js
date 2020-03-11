@@ -1,10 +1,15 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html,css } from 'lit-element';
 
 import './my-header.js';
 import './my-content.js';
 import './my-footer.js';
 
 class MyPage extends LitElement {
+
+  static get styles(){
+    return css ``;
+  }
+
   render() {
     return html`
       <my-header></my-header>
