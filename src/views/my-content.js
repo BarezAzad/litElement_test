@@ -1,10 +1,15 @@
-import { LitElement, html,css } from 'lit-element';
+import { LitElement, html, css } from "lit-element";
 import "@vaadin/vaadin-text-field";
 import "@vaadin/vaadin-button";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-radio-button/vaadin-radio-button";
 import "@vaadin/vaadin-radio-button/vaadin-radio-group";
-import { VisibilityFilters, getVisibleTodosSelector } from "../redux/reducer.js";
+import "@vaadin/vaadin-list-box";
+import "@vaadin/vaadin-item";
+import {
+  VisibilityFilters,
+  getVisibleTodosSelector
+} from "../redux/reducer.js";
 import { connect } from "pwa-helpers";
 import { store } from "../redux/store.js";
 import {
@@ -15,6 +20,25 @@ import {
 } from "../redux/actions.js";
 
 class MyContent extends connect(store)(LitElement) {
+  static get properties() {
+    return {
+      // tasks
+      todos: { type: Array },
+      filter: { type: String },
+      task: { type: String },
+
+      // program language list
+      list: { type: Array },
+      subject: { type: Object }
+    };
+  }
+
+  constructor() {
+    super();
+    this.list = ["Golang", "Node.Js", "Python"];
+    this.subject = { hardwer: "Hardwer List", ProgramLang: "Program Language" };
+  }
+
   static get styles() {
     return css`
       content {
@@ -24,14 +48,6 @@ class MyContent extends connect(store)(LitElement) {
         padding-top: 20px;
       }
     `;
-  }
-
-  static get properties() {
-    return {
-      todos: { type: Array },
-      filter: { type: String },
-      task: { type: String }
-    };
   }
 
   stateChanged(state) {
@@ -53,23 +69,22 @@ class MyContent extends connect(store)(LitElement) {
             Add Task
           </vaadin-button>
         </div>
-        <div class="todos-list" >
+        <div >
         ${this.todos.map(
-            todo => html`
-              <div class="todo-item" align="left">
-                <vaadin-checkbox
-                  ?checked="${todo.complete}"
-                  @change="${e =>
-                    this.updateTodoStatus(todo, e.target.checked)}">
-                  ${todo.task}
-                </vaadin-checkbox>
-              </div>
-            `
-          )}
+          todo => html`
+            <div class="todo-item" align="left">
+              <vaadin-checkbox
+                ?checked="${todo.complete}"
+                @change="${e => this.updateTodoStatus(todo, e.target.checked)}"
+              >
+                ${todo.task}
+              </vaadin-checkbox>
+            </div>
+          `
+        )}
         </div>
 
         <vaadin-radio-group
-          class="visibility-filters"
           value="${this.filter}"
           @value-changed="${this.filterChanged}"
         >
@@ -84,6 +99,19 @@ class MyContent extends connect(store)(LitElement) {
         <vaadin-button @click="${this.clearCompleted}">
           Clear completed
         </vaadin-button>
+
+        <br/><br/>
+        <vaadin-list-box>
+          <h2><b>${this.subject.ProgramLang}</b><br/></h2>
+          ${this.list.map(
+            (item, index) =>
+              html`
+                <vaadin-item>
+                  ${index}- ${item}
+                </vaadin-item>
+              `
+          )}
+          <vaadin-list-box>
 
       </content>
     `;
@@ -110,15 +138,13 @@ class MyContent extends connect(store)(LitElement) {
     store.dispatch(updateTodoStatus(updatedTodo, complete));
   }
 
-  filterChanged(e) { 
+  filterChanged(e) {
     this.filter = e.target.value;
     store.dispatch(updateFilter(e.detail.value));
   }
 
-  clearCompleted() { 
+  clearCompleted() {
     store.dispatch(clearCompleted());
   }
-  
-
 }
-customElements.define('my-content', MyContent);
+customElements.define("my-content", MyContent);
