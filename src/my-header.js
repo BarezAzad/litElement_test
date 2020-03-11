@@ -13,6 +13,25 @@ class MyHeader extends LitElement {
       margin: 0;
       color: white;
     }
+    nav {
+        list-style-type: none;
+        margin: 0;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #4caf50;
+      }
+      a {
+        /* display: block; */
+        font-size: 25px;
+        color: white;
+        font-weight:bold;
+        text-align: center;
+        padding: 10px 10px;
+        text-decoration: none;
+      }
+      a:hover {
+        background-color: #333333;
+      }
      `;
   }
 
@@ -21,6 +40,10 @@ class MyHeader extends LitElement {
        <header>
       <h1>ToDo App</h1>
       </header>
+      <nav>
+        <a href="/">Todos</a>
+        <a href="/users">Users</a>
+      </nav>
     `;
   }
 }

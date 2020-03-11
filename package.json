@@ -27,6 +27,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "@vaadin/router": "^1.7.1",
     "@vaadin/vaadin-button": "^2.2.2",
     "@vaadin/vaadin-checkbox": "^2.2.12",
     "@vaadin/vaadin-list-box": "^1.2.0",

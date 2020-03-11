@@ -4,15 +4,15 @@ import "@vaadin/vaadin-button";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-radio-button/vaadin-radio-button";
 import "@vaadin/vaadin-radio-button/vaadin-radio-group";
-import { VisibilityFilters, getVisibleTodosSelector } from "./redux/reducer.js";
+import { VisibilityFilters, getVisibleTodosSelector } from "../redux/reducer.js";
 import { connect } from "pwa-helpers";
-import { store } from "./redux/store.js";
+import { store } from "../redux/store.js";
 import {
   addTodo,
   updateTodoStatus,
   updateFilter,
   clearCompleted
-} from "./redux/actions.js";
+} from "../redux/actions.js";
 
 class MyContent extends connect(store)(LitElement) {
   static get styles() {
