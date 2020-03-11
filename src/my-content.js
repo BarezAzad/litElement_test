@@ -16,7 +16,6 @@ class MyContent extends LitElement {
     return css`
       content {
         margin: 0;
-        background-color: rgb(198, 226, 248);
       }
       .input-layout {
         padding-top: 20px;
@@ -53,17 +52,37 @@ class MyContent extends LitElement {
           </vaadin-button>
         </div>
         <div class="todos-list" >
-          ${this.todos.map(
+        ${this.applyFilter(this.todos).map(
             todo => html`
               <div class="todo-item" align="left">
                 <vaadin-checkbox
-                  ?checked="${todo.complete}">
+                  ?checked="${todo.complete}"
+                  @change="${e =>
+                    this.updateTodoStatus(todo, e.target.checked)}">
                   ${todo.task}
                 </vaadin-checkbox>
               </div>
             `
           )}
         </div>
+
+        <vaadin-radio-group
+          class="visibility-filters"
+          value="${this.filter}"
+          @value-changed="${this.filterChanged}"
+        >
+          ${Object.values(VisibilityFilters).map(
+            filter => html`
+              <vaadin-radio-button value="${filter}">
+                ${filter}
+              </vaadin-radio-button>
+            `
+          )}
+        </vaadin-radio-group>
+        <vaadin-button @click="${this.clearCompleted}">
+          Clear completed
+        </vaadin-button>
+
       </content>
     `;
   }
@@ -90,6 +109,30 @@ class MyContent extends LitElement {
       this.task = "";
     }
   }
-  
+
+  updateTodoStatus(updatedTodo, complete) {
+    this.todos = this.todos.map(todo =>
+      updatedTodo === todo ? { ...updatedTodo, complete } : todo
+    );
+  }
+
+  filterChanged(e) { 
+    this.filter = e.target.value;
+  }
+
+  clearCompleted() { 
+    this.todos = this.todos.filter(todo => !todo.complete);
+  }
+  applyFilter(todos) { 
+    switch (this.filter) {
+      case VisibilityFilters.show_active:
+        return todos.filter(todo => !todo.complete);
+      case VisibilityFilters.show_completed:
+        return todos.filter(todo => todo.complete);
+      default:
+        return todos;
+    }
+  }
+
 }
 customElements.define('my-content', MyContent);
