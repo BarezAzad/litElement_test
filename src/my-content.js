@@ -4,14 +4,17 @@ import "@vaadin/vaadin-button";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-radio-button/vaadin-radio-button";
 import "@vaadin/vaadin-radio-button/vaadin-radio-group";
+import { VisibilityFilters, getVisibleTodosSelector } from "./redux/reducer.js";
+import { connect } from "pwa-helpers";
+import { store } from "./redux/store.js";
+import {
+  addTodo,
+  updateTodoStatus,
+  updateFilter,
+  clearCompleted
+} from "./redux/actions.js";
 
-const VisibilityFilters = {
-  show_all: "all",
-  show_active: "active",
-  show_completed: "completed"
-};
-
-class MyContent extends LitElement {
+class MyContent extends connect(store)(LitElement) {
   static get styles() {
     return css`
       content {
@@ -30,11 +33,10 @@ class MyContent extends LitElement {
       task: { type: String }
     };
   }
-  constructor() {
-    super();
-    this.todos = [];
-    this.filter = VisibilityFilters.show_all;
-    this.task = "";
+
+  stateChanged(state) {
+    this.todos = getVisibleTodosSelector(state);
+    this.filter = state.filter;
   }
 
   render() {
@@ -43,7 +45,7 @@ class MyContent extends LitElement {
         <div class="input-layout" @keyup="${this.shortcutListener}">
           <vaadin-text-field
             placeholder="Task"
-            value="${this.task}"
+            value="${this.task || ""}"
             @change="${this.updateTask}"
           >
           </vaadin-text-field>
@@ -52,7 +54,7 @@ class MyContent extends LitElement {
           </vaadin-button>
         </div>
         <div class="todos-list" >
-        ${this.applyFilter(this.todos).map(
+        ${this.todos.map(
             todo => html`
               <div class="todo-item" align="left">
                 <vaadin-checkbox
@@ -99,40 +101,24 @@ class MyContent extends LitElement {
 
   addTodo() {
     if (this.task) {
-      this.todos = [
-        ...this.todos,
-        {
-          task: this.task,
-          complate: false
-        }
-      ];
+      store.dispatch(addTodo(this.task));
       this.task = "";
     }
   }
 
   updateTodoStatus(updatedTodo, complete) {
-    this.todos = this.todos.map(todo =>
-      updatedTodo === todo ? { ...updatedTodo, complete } : todo
-    );
+    store.dispatch(updateTodoStatus(updatedTodo, complete));
   }
 
   filterChanged(e) { 
     this.filter = e.target.value;
+    store.dispatch(updateFilter(e.detail.value));
   }
 
   clearCompleted() { 
-    this.todos = this.todos.filter(todo => !todo.complete);
+    store.dispatch(clearCompleted());
   }
-  applyFilter(todos) { 
-    switch (this.filter) {
-      case VisibilityFilters.show_active:
-        return todos.filter(todo => !todo.complete);
-      case VisibilityFilters.show_completed:
-        return todos.filter(todo => todo.complete);
-      default:
-        return todos;
-    }
-  }
+  
 
 }
 customElements.define('my-content', MyContent);
