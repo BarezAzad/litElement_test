@@ -1,0 +1,32 @@
+{
+  "name": "litElement_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --env.mode development",
+    "dist": "webpack --env.mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BarezAzad/litElement_test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BarezAzad/litElement_test/issues"
+  },
+  "homepage": "https://github.com/BarezAzad/litElement_test#readme",
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.4.2",
+    "copy-webpack-plugin": "^5.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "lit-element": "^2.2.1"
+  }
+}
